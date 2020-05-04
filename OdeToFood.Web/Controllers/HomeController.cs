@@ -12,9 +12,9 @@ namespace OdeToFood.Web.Controllers
     {
         private readonly IRestaurantData _fakeDb;
 
-        public HomeController()
+        public HomeController(IRestaurantData fakeDb)
         {
-            _fakeDb = new InMemoryRestaurantData();
+            _fakeDb = fakeDb;
         }
 
         public ActionResult Index()

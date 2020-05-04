@@ -1,0 +1,14 @@
+﻿# solution
+packages
+.vs
+.idea
+OdeToFood.sln.DotSettings.user
+
+# Web
+OdeToFood.Web/bin
+OdeToFood.Web/obj
+OdeToFood.Web/OdeToFood.Web.csproj.user
+
+# Data
+OdeToFood.Data/obj
+OdeToFood.Data/bin

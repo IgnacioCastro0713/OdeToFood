@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using OdeToFood.Web.Models.ViewModels;
+
+namespace OdeToFood.Web.Controllers
+{
+    public class GreetingController : Controller
+    {
+        // GET: Greeting
+        public ActionResult Index()
+        {
+            var viewModel = new GreetingViewModel
+            {
+                Message = ConfigurationManager.AppSettings["message"]
+            };
+            return View(viewModel);
+        }
+    }
+}
