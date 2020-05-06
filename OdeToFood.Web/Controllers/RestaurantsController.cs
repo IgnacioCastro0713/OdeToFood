@@ -1,4 +1,6 @@
-﻿using OdeToFood.Data.Services.Repositories;
+﻿using OdeToFood.Data.Models;
+using OdeToFood.Data.Services.Repositories;
+using OdeToFood.Web.Models.ViewModels;
 using System.Web.Mvc;
 
 namespace OdeToFood.Web.Controllers
@@ -12,33 +14,76 @@ namespace OdeToFood.Web.Controllers
             _fakeDb = fakeDb;
         }
 
-        // GET
+        [HttpGet]
         public ActionResult Index()
         {
             var restaurants = _fakeDb.GetAll();
             return View(restaurants);
         }
 
+        [HttpGet]
         public ActionResult Create()
         {
-            throw new System.NotImplementedException();
+            return View("RestaurantForm", new RestaurantFormViewModel());
         }
 
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult Create(RestaurantFormViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("RestaurantForm");
+            }
+
+            var restaurant = new Restaurant {Name = viewModel.Name, Cuisine = viewModel.Cuisine};
+            _fakeDb.Add(restaurant);
+
+            return RedirectToAction("Details", new {id = restaurant.Id});
+        }
+
+        [HttpGet]
         public ActionResult Edit(int id)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public ActionResult Details(int id)
-        {
-            var restaurant = _fakeDb.GetRestaurant(id);
+            var restaurant = _fakeDb.GetOne(id);
 
             if (restaurant == null)
             {
                 return View("NotFound");
             }
-            
-            return View(restaurant);
+
+            var viewModel = new RestaurantFormViewModel
+            {
+                Name = restaurant.Name,
+                Cuisine = restaurant.Cuisine,
+                Id = restaurant.Id
+            };
+
+            return View("RestaurantForm", viewModel);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult Update(RestaurantFormViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("RestaurantForm");
+            }
+
+            var restaurant = new Restaurant {Name = viewModel.Name, Cuisine = viewModel.Cuisine, Id = viewModel.Id};
+
+            _fakeDb.Update(restaurant);
+
+            return RedirectToAction("Details", new {id = restaurant.Id});
+        }
+
+        [HttpGet]
+        public ActionResult Details(int id)
+        {
+            var restaurant = _fakeDb.GetOne(id);
+
+            return restaurant == null ? View("NotFound") : View(restaurant);
         }
 
         public ActionResult Delete(int id)
