@@ -9,6 +9,7 @@ using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using OdeToFood.Data.Services;
 using OdeToFood.Data.Services.Repositories;
+using OdeToFood.Data.Services.Repositories.Implemantations;
 
 namespace OdeToFood.Web
 {
@@ -20,8 +21,9 @@ namespace OdeToFood.Web
             
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
             builder.RegisterApiControllers(typeof(MvcApplication).Assembly);
-
-            builder.RegisterType<RestaurantData>().As<IRestaurantData>().SingleInstance();
+            
+            builder.RegisterType<RestaurantRepository>().As<IRestaurantRepository>().InstancePerRequest();
+            builder.RegisterType<OdeToFoodDbContext>().InstancePerRequest();
 
             var container = builder.Build();
             

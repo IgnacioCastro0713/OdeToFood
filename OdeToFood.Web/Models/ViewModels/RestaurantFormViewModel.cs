@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using OdeToFood.Data.Models;
 using OdeToFood.Web.Controllers;
@@ -21,8 +22,8 @@ namespace OdeToFood.Web.Models.ViewModels
         {
             get
             {
-                Expression<Func<RestaurantsController, ActionResult>> create = (c => c.Create(this));
-                Expression<Func<RestaurantsController, ActionResult>> update = (c => c.Update(this));
+                Expression<Func<RestaurantsController, Task<ActionResult>>> create = (c => c.Create(this));
+                Expression<Func<RestaurantsController, Task<ActionResult>>> update = (c => c.Update(this));
                 var method = Id != 0 ? update : create;
                 return (method.Body as MethodCallExpression)?.Method.Name;
             }

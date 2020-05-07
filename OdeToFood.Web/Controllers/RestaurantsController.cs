@@ -1,23 +1,24 @@
 ﻿using OdeToFood.Data.Models;
-using OdeToFood.Data.Services.Repositories;
+using OdeToFood.Data.Services.Repositories.Implemantations;
 using OdeToFood.Web.Models.ViewModels;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace OdeToFood.Web.Controllers
 {
     public class RestaurantsController : Controller
     {
-        private readonly IRestaurantData _fakeDb;
+        private readonly IRestaurantRepository _restaurantRepository;
 
-        public RestaurantsController(IRestaurantData fakeDb)
+        public RestaurantsController(IRestaurantRepository restaurantRepository)
         {
-            _fakeDb = fakeDb;
+            _restaurantRepository = restaurantRepository;
         }
 
         [HttpGet]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var restaurants = _fakeDb.GetAll();
+            var restaurants = await _restaurantRepository.GetAll();
             return View(restaurants);
         }
 
@@ -29,7 +30,7 @@ namespace OdeToFood.Web.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Create(RestaurantFormViewModel viewModel)
+        public async Task<ActionResult> Create(RestaurantFormViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -37,15 +38,15 @@ namespace OdeToFood.Web.Controllers
             }
 
             var restaurant = new Restaurant {Name = viewModel.Name, Cuisine = viewModel.Cuisine};
-            _fakeDb.Add(restaurant);
+            await _restaurantRepository.Add(restaurant);
 
             return RedirectToAction("Details", new {id = restaurant.Id});
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            var restaurant = _fakeDb.GetOne(id);
+            var restaurant = await _restaurantRepository.GetOne(id);
 
             if (restaurant == null)
             {
@@ -64,7 +65,7 @@ namespace OdeToFood.Web.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Update(RestaurantFormViewModel viewModel)
+        public async Task<ActionResult> Update(RestaurantFormViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -73,22 +74,33 @@ namespace OdeToFood.Web.Controllers
 
             var restaurant = new Restaurant {Name = viewModel.Name, Cuisine = viewModel.Cuisine, Id = viewModel.Id};
 
-            _fakeDb.Update(restaurant);
+            await _restaurantRepository.Update(restaurant);
 
             return RedirectToAction("Details", new {id = restaurant.Id});
         }
 
         [HttpGet]
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            var restaurant = _fakeDb.GetOne(id);
+            var restaurant = await _restaurantRepository.GetOne(id);
 
             return restaurant == null ? View("NotFound") : View(restaurant);
         }
 
-        public ActionResult Delete(int id)
+        [HttpGet]
+        public async Task<ActionResult> Delete(int id)
         {
-            throw new System.NotImplementedException();
+            var restaurant = await _restaurantRepository.GetOne(id);
+
+            return restaurant == null ? View("NotFound") : View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Delete(int id, FormCollection formCollection)
+        {
+            await _restaurantRepository.Delete(id);
+            return RedirectToAction("Index");
         }
     }
 }

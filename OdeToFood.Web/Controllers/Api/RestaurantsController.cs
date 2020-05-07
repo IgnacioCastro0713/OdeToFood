@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using OdeToFood.Data.Models;
-using OdeToFood.Data.Services.Repositories;
+using OdeToFood.Data.Services.Repositories.Implemantations;
 
 namespace OdeToFood.Web.Controllers.Api
 {
     public class RestaurantsController : ApiController
     {
-        private readonly IRestaurantData _fakeDb;
+        private readonly IRestaurantRepository _restaurantRepository;
 
-        public RestaurantsController(IRestaurantData fakeDb)
+        public RestaurantsController(IRestaurantRepository restaurantRepository)
         {
-            _fakeDb = fakeDb;
+            _restaurantRepository = restaurantRepository;
         }
         
         [HttpGet]
-        public IEnumerable<Restaurant> Index()
+        public async Task<IEnumerable<Restaurant>> Index()
         {
-            return _fakeDb.GetAll();
+            return await _restaurantRepository.GetAll();
         }
     }
 }
