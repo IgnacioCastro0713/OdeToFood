@@ -18,8 +18,7 @@ namespace OdeToFood.Data.Services.Repositories
 
         public async Task<IEnumerable<Restaurant>> GetAll()
         {
-            return await _context.Restaurants.OrderBy(restaurant => restaurant.Name)
-                .ToListAsync();
+            return await _context.Restaurants.OrderBy(restaurant => restaurant.Name).ToListAsync();
         }
 
         public async Task<Restaurant> GetOne(int id)

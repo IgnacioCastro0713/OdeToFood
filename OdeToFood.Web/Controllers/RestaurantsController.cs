@@ -1,4 +1,5 @@
-﻿using OdeToFood.Data.Models;
+﻿using System.Linq;
+using OdeToFood.Data.Models;
 using OdeToFood.Data.Services.Repositories.Implemantations;
 using OdeToFood.Web.Models.ViewModels;
 using System.Threading.Tasks;
@@ -16,9 +17,17 @@ namespace OdeToFood.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string search = null)
         {
             var restaurants = await _restaurantRepository.GetAll();
+
+            ViewBag.CurrentFilter = search;
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                restaurants = restaurants.Where(restaurant => restaurant.Name.Contains(search));
+            }
+
             return View(restaurants);
         }
 
